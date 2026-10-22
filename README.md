@@ -1,0 +1,47 @@
+# WWF4P Kaillera server
+
+Kaillera-сервер для WWF WrestleMania на четверых (WWF4P): EmuLinker-K, коммит `214fe81`, с патчем **holefix**.
+Патч устраняет найденную причину рассинхронов и вылетов клиента n02: сервер всегда шлёт пачки по 9 сообщений.
+
+## Установка одной командой
+
+На чистом VPS с Ubuntu 22.04/24.04 или Debian 12/13, от root:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install.sh | bash
+```
+
+Через 2–5 минут скрипт напишет адрес вида `IP:27888`. Игроки вводят его в Kaillera → **Custom IP**.
+
+Что делает скрипт:
+- ставит Java 17;
+- скачивает готовый jar из релиза этого репозитория и проверяет SHA-256 `67f5e638…eb86`;
+- если скачать не вышло, собирает сервер из исходников EmuLinker-K с патчем `patches/emulinker-wwf4p-holefix.patch`;
+- настраивает службу systemd `wwf4p-kaillera` (автозапуск, перезапуск при сбое);
+- открывает UDP 27888 в ufw/firewalld и проверяет готовность сервера.
+
+Повторный запуск безопасен.
+
+Опции передаются после `bash -s --`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install.sh | bash -s -- --port 27888 --name "WWF4P" --max-users 16
+curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install.sh | bash -s -- --build   # только сборка из исходников
+```
+
+## Управление
+
+```bash
+systemctl status wwf4p-kaillera --no-pager   # состояние
+journalctl -u wwf4p-kaillera -f              # журнал в реальном времени
+cat /opt/wwf4p-kaillera/emulinker.log        # журнал сервера: присылать при сбоях
+```
+
+Если игроки не подключаются, откройте **UDP 27888** в панели хостинга (Firewall / Security group).
+
+Почасовую аренду после игры **удаляйте** в панели хостинга. Выключенный сервер тоже оплачивается.
+
+## Лицензия
+
+EmuLinker-K распространяется по GPL-2.0. Исходники: https://github.com/hopskipnfall/EmuLinker-K, коммит
+`214fe81b3e1d52916933264c4bcdb41db87c9988`, плюс патч из `patches/`. Jar в релизе собран из них без других изменений.

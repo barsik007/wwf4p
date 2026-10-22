@@ -1,0 +1,27 @@
+diff --git a/emulinker/src/main/java/org/emulinker/kaillera/controller/v086/V086ClientHandler.kt b/emulinker/src/main/java/org/emulinker/kaillera/controller/v086/V086ClientHandler.kt
+index b2797a7..86ff9e3 100644
+--- a/emulinker/src/main/java/org/emulinker/kaillera/controller/v086/V086ClientHandler.kt
++++ b/emulinker/src/main/java/org/emulinker/kaillera/controller/v086/V086ClientHandler.kt
+@@ -377,8 +377,10 @@ class V086ClientHandler(
+     // if ((System.currentTimeMillis() - lastResend) > (user.getPing()*3))
+     if (System.currentTimeMillis() - lastResend > maxPingMs) {
+       // int numToSend = (3+timeoutCounter);
+-      var numToSend = 3 * timeoutCounter
+-      if (numToSend > V086Controller.MAX_BUNDLE_SIZE) numToSend = V086Controller.MAX_BUNDLE_SIZE
++      // WWF4P (2026-10-20): always resend the maximum bundle. A 3-message resend can be shorter
++      // than the gap of a client that lost several datagrams; the n02 client then reserves
++      // in-cache slots for the missing serials that are never filled (wrong input / crash).
++      val numToSend = V086Controller.MAX_BUNDLE_SIZE
+ 
+       stripFromProdBinary {
+         logger.atFinest().log("%s: resending last %d messages", this, numToSend)
+@@ -409,7 +411,8 @@ class V086ClientHandler(
+     }
+   }
+ 
+-  fun send(outMessage: V086Message, numToSend: Int = 5) {
++  // WWF4P (2026-10-20): 9 instead of 5 so every datagram covers any gap n02 accepts (< 10).
++  fun send(outMessage: V086Message, numToSend: Int = V086Controller.MAX_BUNDLE_SIZE) {
+     synchronized(sendMutex) {
+       outMessage.messageNumber = getAndIncrementSendMessageNumber()
+       var numToSend = numToSend
