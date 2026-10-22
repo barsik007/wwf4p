@@ -29,6 +29,18 @@ curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install.sh | b
 curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install.sh | bash -s -- --build   # только сборка из исходников
 ```
 
+## Журналы после игры
+
+```bash
+wwf4p-logs
+```
+
+Команда соберёт журналы сервера, журнал службы и сетевую статистику в `/root/wwf4p-logs-<дата>.tar.gz`. Архив заберите через WinSCP до удаления сервера. На сервере, установленном до появления этой команды:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/collect-logs.sh | bash
+```
+
 ## Управление
 
 ```bash

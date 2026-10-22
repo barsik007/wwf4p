@@ -155,6 +155,9 @@ elif command -v firewall-cmd >/dev/null && firewall-cmd --state >/dev/null 2>&1;
 else echo "Локальный брандмауэр не включён - ничего не меняю."; fi
 if swapon --show | grep -q /swapfile-wwf4p; then swapoff /swapfile-wwf4p; rm -f /swapfile-wwf4p; fi
 
+# команда сбора журналов: wwf4p-logs
+curl -fsSL "https://raw.githubusercontent.com/$REPO/main/collect-logs.sh" -o /usr/local/bin/wwf4p-logs && chmod 755 /usr/local/bin/wwf4p-logs || true
+
 say "6/6 Проверка"
 for i in $(seq 1 30); do
   if journalctl -u $SVC --since "-2min" --no-pager -q | grep -q "Ready to accept connections"; then OK=1; break; fi
@@ -170,3 +173,4 @@ else
 fi
 echo "Если не подключаются - откройте UDP $PORT в панели хостинга (Firewall / Security group)."
 echo "Управление: systemctl status|restart|stop $SVC ; логи: journalctl -u $SVC -f ; файл $DIR/emulinker.log"
+echo "После игры: команда  wwf4p-logs  соберёт журналы в /root/wwf4p-logs-*.tar.gz (забрать через WinSCP)."
