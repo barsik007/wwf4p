@@ -17,6 +17,11 @@ if [ -d "$DIR" ]; then
 fi
 # журнал службы systemd (запуски, падения, перезапуски) - за последние 7 дней
 journalctl -u $SVC --no-pager --since "-7d" -o short-iso > "$TMP/journal.txt" 2>&1
+# Mednafen-сервер (install-mednafen.sh), если установлен
+if systemctl list-unit-files mednafen-server.service >/dev/null 2>&1 && [ -d /opt/mednafen-server ]; then
+  journalctl -u mednafen-server --no-pager --since "-7d" -o short-iso > "$TMP/mednafen-journal.txt" 2>&1
+  grep -vE '^password' /opt/mednafen-server/standard.conf > "$TMP/mednafen-standard.conf" 2>/dev/null
+fi
 
 # статистика сервера и сети
 {
@@ -27,6 +32,7 @@ journalctl -u $SVC --no-pager --since "-7d" -o short-iso > "$TMP/journal.txt" 2>
   run free -m
   run df -h /
   run ss -uanp
+  run ss -tanp
   run cat /proc/net/snmp            # UDP: InErrors, RcvbufErrors, SndbufErrors = потери на сервере
   run ip -s link
   run sysctl net.core.rmem_max net.core.wmem_max net.core.rmem_default net.core.wmem_default

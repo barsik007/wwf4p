@@ -29,6 +29,16 @@ curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install.sh | b
 curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install.sh | bash -s -- --build   # только сборка из исходников
 ```
 
+## Сервер Mednafen (отдельно)
+
+Сервер сетевой игры Mednafen (`mednafen-server` 0.5.2, порт TCP 4046) одной командой:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install-mednafen.sh | bash
+```
+
+Скрипт собирает сервер из официального архива mednafen.github.io, настраивает службу `mednafen-server` с автозапуском и открывает порт. В Mednafen подключение: `/server IP 4046`. Опции: `bash -s -- --port 4046 --max-clients 32 --password СЕКРЕТ`. Журналы собирает та же команда `wwf4p-logs`.
+
 ## Журналы после игры
 
 ```bash
