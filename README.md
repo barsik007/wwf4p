@@ -15,7 +15,7 @@ curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install.sh | b
 
 Что делает скрипт:
 - ставит Java 17;
-- скачивает готовый jar из релиза этого репозитория и проверяет SHA-256 `67f5e638…eb86`;
+- скачивает готовый jar из папки `bin/` этого репозитория и проверяет SHA-256 `67f5e638…eb86`;
 - если скачать не вышло, собирает сервер из исходников EmuLinker-K с патчем `patches/emulinker-wwf4p-holefix.patch`;
 - настраивает службу systemd `wwf4p-kaillera` (автозапуск, перезапуск при сбое);
 - открывает UDP 27888 в ufw/firewalld и проверяет готовность сервера.
@@ -44,4 +44,4 @@ cat /opt/wwf4p-kaillera/emulinker.log        # журнал сервера: пр
 ## Лицензия
 
 EmuLinker-K распространяется по GPL-2.0. Исходники: https://github.com/hopskipnfall/EmuLinker-K, коммит
-`214fe81b3e1d52916933264c4bcdb41db87c9988`, плюс патч из `patches/`. Jar в релизе собран из них без других изменений.
+`214fe81b3e1d52916933264c4bcdb41db87c9988`, плюс патч из `patches/`. Jar в `bin/` собран из них без других изменений.

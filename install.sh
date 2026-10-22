@@ -2,7 +2,7 @@
 # WWF4P: развернуть пропатченный Kaillera-сервер (EmuLinker-K 214fe81 + holefix) на VPS с Linux.
 # Подходит для Ubuntu 22.04/24.04 и Debian 12/13. Одна команда (от root):
 #     curl -fsSL https://raw.githubusercontent.com/barsik007/wwf4p/main/install.sh | bash
-# По умолчанию скачивает готовый jar из релиза репозитория (проверка SHA-256); если не вышло - собирает сам.
+# По умолчанию скачивает готовый jar из репозитория (bin/) (проверка SHA-256); если не вышло - собирает сам.
 #     ... | bash -s -- --build          # принудительно собрать из исходников EmuLinker-K + патч
 #     ... | bash -s -- --jar FILE.jar   # взять jar с диска
 # Опции: --port 27888  --name "WWF4P"  --max-users 16
@@ -32,7 +32,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update -q
 apt-get install -y -q curl ca-certificates
 if [ -z "$JAR" ] && [ "$BUILD_ONLY" = 0 ]; then
-  URL="https://github.com/$REPO/releases/download/$RELEASE_TAG/emulinker-k-holefix-214fe81.jar"
+  URL="https://raw.githubusercontent.com/$REPO/main/bin/emulinker-k-holefix-214fe81.jar"
   echo "Скачиваю готовый jar: $URL"
   if curl -fL --retry 3 -o /tmp/emulinker-k-holefix-214fe81.jar "$URL" \
      && [ "$(sha256sum /tmp/emulinker-k-holefix-214fe81.jar | cut -d' ' -f1)" = "$JAR_SHA_EXPECTED" ]; then
