@@ -27,10 +27,12 @@ say "2/5 Сборка mednafen-server $VER"
 BUILD=/opt/mednafen-server-build; rm -rf "$BUILD"; mkdir -p "$BUILD"; cd "$BUILD"
 curl -fL --retry 3 -o server.tar.xz "https://mednafen.github.io/releases/files/mednafen-server-$VER.tar.xz"
 tar xJf server.tar.xz
-SRC=$(find "$BUILD" -maxdepth 1 -type d -name 'mednafen-server*' | head -1)
-[ -n "$SRC" ] || SRC="$BUILD/mednafen-server"
-cd "$SRC"
-./configure -q >/dev/null
+# Папка с исходниками - та, где лежит configure (найти по файлу, а не по имени папки:
+# имя самой папки сборки тоже начинается с mednafen-server).
+CONF=$(find "$BUILD" -mindepth 2 -maxdepth 3 -type f -name configure | head -1)
+[ -n "$CONF" ] || { echo "В архиве нет configure:"; find "$BUILD" -maxdepth 3 | head -30; exit 1; }
+SRC=$(dirname "$CONF"); cd "$SRC"; echo "Исходники: $SRC"
+sh ./configure -q >/dev/null
 make -s -j"$(nproc)"
 [ -x src/mednafen-server ] || { echo "Сборка не дала src/mednafen-server"; exit 1; }
 
